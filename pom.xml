@@ -9,6 +9,18 @@
     <spring.version>4.0.9.RELEASE</spring.version>
   </properties>
   <dependencies>
+   <!-- 添加Hibernate依赖 -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>3.6.10.Final</version>
+        </dependency>
+        <!-- drudi连接池 -->
+	   <dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>druid</artifactId>
+		    <version>1.0.13</version>
+		</dependency>
   		<!-- SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>

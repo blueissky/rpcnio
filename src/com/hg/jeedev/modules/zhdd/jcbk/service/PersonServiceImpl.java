@@ -1,7 +1,12 @@
 package com.hg.jeedev.modules.zhdd.jcbk.service;
 
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.hg.jeedev.common.dao.DataBaseDao;
 
 import top.rpc.anno.RpcService;
 
@@ -9,6 +14,8 @@ import top.rpc.anno.RpcService;
 @Component
 public class PersonServiceImpl implements PersonService{
 
+	@Autowired
+	private DataBaseDao dataBaseDao;
 	public Person getInfo() {
 		Person person = new Person();
 		person.setAge(22);
@@ -20,6 +27,9 @@ public class PersonServiceImpl implements PersonService{
 
 	public boolean printInfo(Person person) {
 		System.out.println(111);
+		String sql=" select * from GCLLTJ t where rownum <100 ";
+		List obj = dataBaseDao.executeQuery(sql);
+		System.out.println(obj);
 		if(person != null){
 			System.out.println(person);
 			return true;

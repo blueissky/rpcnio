@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan base-package="com.hg.jeedev.modules.zhdd.jcbk.service"/>
+	<context:component-scan base-package="com.hg.jeedev"/>
 
     <context:property-placeholder location="classpath:zk.properties"/>
 
@@ -31,5 +31,39 @@
     <bean id="rpcServer" class="top.rpc.server.RpcServer">
         <constructor-arg name="monitorServer" value="${monitorServer}"/>
     </bean>
+
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="DriverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="Url" value="jdbc:oracle:thin:@192.168.10.224:1521:MCSJT2" />
+		<property name="Username" value="MCS_JT" />
+		<property name="Password" value="MCS_JT" />
+		 <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="80" />
+        <property name="minIdle" value="100" />
+        <property name="maxActive" value="500" />
+        <!-- 配置监控统计拦截的filters, 监控统计："stat",防SQL注入："wall",组合使用： "stat,wall" -->
+		<property name="Filters" value="stat" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="TimeBetweenEvictionRunsMillis" value="60000" />
+		 <!-- 打开PSCache，并且指定每个连接上PSCache的大小 SQL预编译 -->
+        <property name="poolPreparedStatements" value="true" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="500" />
+		<!-- 连接泄漏处理。Druid提供了RemoveAbandanded相关配置，用来关闭长时间不使用的连接（例如忘记关闭连接）。 -->
+        <property name="removeAbandoned" value="true" />
+        <!-- 1800秒，也就是30分钟 -->
+        <property name="removeAbandonedTimeout" value="1800" />
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned" value="true" />
+    </bean>    
+    <!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"> -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+ 		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
+	</bean>
 
 </beans>
