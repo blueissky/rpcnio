@@ -12,11 +12,11 @@
     <context:property-placeholder location="classpath:zk.properties"/>
 
 	<!-- 使用zookeeper-->
-    <bean id="zkServer" class="top.rpc.zk.ZookpeerInit">
-    	<constructor-arg name="path" value="${path}"/>
-    	<constructor-arg name="server" value="${zkServeres}"/>
-    	<constructor-arg name="timeout" value="${timeout}"/>
-    	<constructor-arg name="monitorServer" value="${monitorServer}"/>
+    <bean id="zkInit" class="top.rpc.zk.ZkInit">
+    	<constructor-arg name="connectionString" value="${connectionString}"/>
+    	<constructor-arg name="sessionTimeout" value="${sessionTimeout}"/>
+    	<constructor-arg name="zkpath" value="${zkpath}"/>
+    	<constructor-arg name="pathValue" value="${pathValue}"/>
     </bean>
     
     <!-- <bean id="rpcServer" class="top.rpc.server.RpcServer">
