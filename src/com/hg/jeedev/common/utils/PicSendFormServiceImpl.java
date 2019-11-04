@@ -1,10 +1,16 @@
 package com.hg.jeedev.common.utils;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -17,10 +23,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONValue;
 import org.springframework.stereotype.Component;
-
-import com.hg.jeedev.modules.zhdd.jcbk.service.PersonService;
 
 import top.rpc.anno.RpcService;
 @RpcService(PicSendFormService.class)
@@ -56,7 +59,36 @@ public class PicSendFormServiceImpl implements PicSendFormService{
 		
 	
 	}
+	public String saveUrlAs(String photoUrl) {
+	     try {
+	      int local = photoUrl.lastIndexOf(".");
+	      String filename="e://temp//img//"+UUID.randomUUID().toString()+"."+photoUrl.substring(local,photoUrl.length());
+	      URL url = new URL(photoUrl);
+	      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	      DataInputStream in = new DataInputStream(connection.getInputStream());
+	      DataOutputStream out = new DataOutputStream(new FileOutputStream(filename));
+	      byte[] buffer = new byte[4096];
+	      int count = 0;
+	      while ((count = in.read(buffer)) > 0) {
+	       out.write(buffer, 0, count);
+	      }
+	      out.close();
+	      in.close();
+	      return filename;
+
+	     } catch (Exception e) {
+	      System.out.println(e);
+	      return null;
+	     }
+	    }
 	
+	public String ftpsave(String url) {
+		FtpUtil ftp=new FtpUtil();
+		String[] sp = ftp.splitUrl(url);
+//		ftp.downloadFtpFile(sp);
+		//ftp,user,pw,ip,port,file,dir
+		return ftp.downloadFtpFile(sp[3],sp[1], sp[2], sp[4], sp[6], sp[5]);
+	}
 	/**
 	 * 上传图片
 	 * @param url 云天励飞接口服务地址
@@ -68,11 +100,15 @@ public class PicSendFormServiceImpl implements PicSendFormService{
 		   String json="";
 	       CloseableHttpClient httpclient = HttpClients.createDefault(); 
 	       try { 
-	           HttpPost httppost = new HttpPost(url); 
-	  
+	    	   //http
+	    	   String fpath=saveUrlAs(filePath);
+	    	   //ftp
+//	    	   String fpath=ftpsave(filePath);
+
+	    	   HttpPost httppost = new HttpPost(url); 
 	           RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(200000).setSocketTimeout(200000).build();
 	           httppost.setConfig(requestConfig);
-	           File file = new File(filePath);
+	           File file = new File(fpath);
 	           MultipartEntityBuilder meb = MultipartEntityBuilder.create();
 	           meb.addBinaryBody("FILE", file);
 	           
